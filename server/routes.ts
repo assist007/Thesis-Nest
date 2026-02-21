@@ -1,14 +1,20 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import session from "express-session";
-import { storage, db } from "./storage";
-import { loginSchema, registerSchema, insertDepartmentSchema, insertFeedbackSchema } from "@shared/schema";
-import { z } from "zod";
+import { storage } from "./storage";
+import { loginSchema, registerSchema, insertDepartmentSchema } from "@shared/schema";
 import crypto from "crypto";
 import connectPgSimple from "connect-pg-simple";
 import { Pool } from "pg";
 
-const PgSession = connectPgSimple(session);
+declare module "express-session" {
+  interface SessionData {
+    userId: string;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const PgSession = connectPgSimple(session as any);
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.DATABASE_URL?.includes("neon.tech") || process.env.DATABASE_URL?.includes("sslmode=require")
@@ -37,7 +43,8 @@ function requireRole(...roles: string[]) {
 }
 
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
-  app.use(session({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  app.use((session as any)({
     store: new PgSession({ pool, createTableIfMissing: true }),
     secret: process.env.SESSION_SECRET || "thesisnest-secret-key",
     resave: false,
@@ -54,7 +61,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       const existingUser = await storage.getUserByUsername(data.username);
       if (existingUser) return res.status(400).json({ error: "Username already in use" });
 
-      const user = await storage.createUser({
+      await storage.createUser({
         ...data,
         password: hashPassword(data.password),
         role: data.role,
@@ -113,25 +120,26 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   });
 
   // Users (admin)
-  app.get("/api/users", requireRole("admin"), async (req, res) => {
+  app.get("/api/users", requireRole("admin"), async (_req, res) => {
     const users = await storage.getAllUsers();
     res.json(users.map(({ password: _, ...u }) => u));
   });
 
   app.patch("/api/users/:id/approve", requireRole("admin"), async (req, res) => {
-    const updated = await storage.updateUser(req.params.id, { isApproved: true });
+    const id = String(req.params.id);
+    const updated = await storage.updateUser(id, { isApproved: true });
     if (!updated) return res.status(404).json({ error: "User not found" });
     const { password: _, ...safeUser } = updated;
     res.json(safeUser);
   });
 
   app.patch("/api/users/:id/reject", requireRole("admin"), async (req, res) => {
-    await storage.deleteUser(req.params.id);
+    await storage.deleteUser(String(req.params.id));
     res.json({ ok: true });
   });
 
   app.delete("/api/users/:id", requireRole("admin"), async (req, res) => {
-    await storage.deleteUser(req.params.id);
+    await storage.deleteUser(String(req.params.id));
     res.json({ ok: true });
   });
 
@@ -156,16 +164,14 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   });
 
   // Departments
-  app.get("/api/departments", async (req, res) => {
-    const depts = await storage.getAllDepartments();
-    res.json(depts);
+  app.get("/api/departments", async (_req, res) => {
+    res.json(await storage.getAllDepartments());
   });
 
   app.post("/api/departments", requireRole("admin"), async (req, res) => {
     try {
       const data = insertDepartmentSchema.parse(req.body);
-      const dept = await storage.createDepartment(data);
-      res.json(dept);
+      res.json(await storage.createDepartment(data));
     } catch (e: any) {
       res.status(400).json({ error: e.message });
     }
@@ -173,7 +179,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
   app.patch("/api/departments/:id", requireRole("admin"), async (req, res) => {
     try {
-      const dept = await storage.updateDepartment(req.params.id, req.body);
+      const dept = await storage.updateDepartment(String(req.params.id), req.body);
       if (!dept) return res.status(404).json({ error: "Department not found" });
       res.json(dept);
     } catch (e: any) {
@@ -182,7 +188,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   });
 
   app.delete("/api/departments/:id", requireRole("admin"), async (req, res) => {
-    await storage.deleteDepartment(req.params.id);
+    await storage.deleteDepartment(String(req.params.id));
     res.json({ ok: true });
   });
 
@@ -190,21 +196,12 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   app.get("/api/theses", requireAuth, async (req, res) => {
     const user = await storage.getUser(req.session!.userId);
     if (!user) return res.status(401).json({ error: "Not found" });
-    if (user.role === "student") {
-      const theses = await storage.getThesesByStudent(user.id);
-      return res.json(theses);
-    }
-    if (user.role === "supervisor") {
-      const theses = await storage.getAllTheses();
-      return res.json(theses);
-    }
-    // admin
-    const theses = await storage.getAllTheses();
-    res.json(theses);
+    if (user.role === "student") return res.json(await storage.getThesesByStudent(user.id));
+    res.json(await storage.getAllTheses());
   });
 
   app.get("/api/theses/:id", requireAuth, async (req, res) => {
-    const thesis = await storage.getThesis(req.params.id);
+    const thesis = await storage.getThesis(String(req.params.id));
     if (!thesis) return res.status(404).json({ error: "Not found" });
     res.json(thesis);
   });
@@ -234,10 +231,10 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
   app.post("/api/theses/:id/resubmit", requireRole("student"), async (req, res) => {
     try {
-      const thesis = await storage.getThesis(req.params.id);
+      const thesis = await storage.getThesis(String(req.params.id));
       if (!thesis) return res.status(404).json({ error: "Not found" });
       const newVersion = thesis.currentVersion + 1;
-      const updated = await storage.updateThesis(req.params.id, {
+      const updated = await storage.updateThesis(String(req.params.id), {
         status: "submitted",
         currentVersion: newVersion,
         title: req.body.title || thesis.title,
@@ -259,30 +256,26 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     try {
       const { status } = req.body;
       const user = await storage.getUser(req.session!.userId);
-      const updated = await storage.updateThesis(req.params.id, { status, supervisorId: user!.id });
+      const updated = await storage.updateThesis(String(req.params.id), { status, supervisorId: user!.id });
       res.json(updated);
     } catch (e: any) {
       res.status(400).json({ error: e.message });
     }
   });
 
-  // Thesis versions
   app.get("/api/theses/:id/versions", requireAuth, async (req, res) => {
-    const versions = await storage.getThesisVersions(req.params.id);
-    res.json(versions);
+    res.json(await storage.getThesisVersions(String(req.params.id)));
   });
 
-  // Feedback
   app.get("/api/theses/:id/feedback", requireAuth, async (req, res) => {
-    const feedback = await storage.getFeedbacksByThesis(req.params.id);
-    res.json(feedback);
+    res.json(await storage.getFeedbacksByThesis(String(req.params.id)));
   });
 
   app.post("/api/theses/:id/feedback", requireRole("supervisor"), async (req, res) => {
     try {
       const user = await storage.getUser(req.session!.userId);
       const feedback = await storage.createFeedback({
-        thesisId: req.params.id,
+        thesisId: String(req.params.id),
         supervisorId: user!.id,
         comment: req.body.comment,
       });
@@ -293,14 +286,12 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   });
 
   // Reports (admin)
-  app.get("/api/reports/department-stats", requireRole("admin"), async (req, res) => {
-    const stats = await storage.getThesisCountByDepartment();
-    res.json(stats);
+  app.get("/api/reports/department-stats", requireRole("admin"), async (_req, res) => {
+    res.json(await storage.getThesisCountByDepartment());
   });
 
-  app.get("/api/reports/supervisor-stats", requireRole("admin"), async (req, res) => {
-    const stats = await storage.getReviewCountBySupervisor();
-    res.json(stats);
+  app.get("/api/reports/supervisor-stats", requireRole("admin"), async (_req, res) => {
+    res.json(await storage.getReviewCountBySupervisor());
   });
 
   return httpServer;

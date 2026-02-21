@@ -1,0 +1,87 @@
+01:13:58.766 Running build in Portland, USA (West) – pdx1
+01:13:58.767 Build machine configuration: 2 cores, 8 GB
+01:13:58.908 Cloning github.com/assist007/Thesis-Nest (Branch: main, Commit: c2649dc)
+01:13:59.788 Cloning completed: 880.000ms
+01:13:59.943 Found .vercelignore
+01:13:59.958 Removed 8 ignored files defined in .vercelignore
+01:13:59.958   /.replit
+01:13:59.958   /attached_assets/image_1771697915077.png
+01:13:59.958   /attached_assets/image_1771698146560.png
+01:13:59.959   /attached_assets/image_1771700942832.png
+01:13:59.959   /attached_assets/image_1771700987607.png
+01:13:59.959   /attached_assets/Pasted--ThesisNest-THESYS-Project-Overview-Purpose-ThesisNest-_1771691113686.txt
+01:13:59.959   /drizzle.config.ts
+01:13:59.959   /script/build.ts
+01:14:00.095 Restored build cache from previous deployment (H6Q9kDUofjXrBGvk9eTWbrt6ryeN)
+01:14:01.606 Running "vercel build"
+01:14:02.391 Vercel CLI 50.22.0
+01:14:03.125 Installing dependencies...
+01:14:04.479 
+01:14:04.479 up to date in 1s
+01:14:04.480 
+01:14:04.480 76 packages are looking for funding
+01:14:04.480   run `npm fund` for details
+01:14:05.048 [36mvite v7.3.0 [32mbuilding client environment for production...[36m[39m
+01:14:05.447 transforming...
+01:14:06.342 
+01:14:06.343 A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+01:14:11.153 [32m✓[39m 2354 modules transformed.
+01:14:11.744 rendering chunks...
+01:14:11.761 computing gzip size...
+01:14:11.791 [2m../dist/public/[22m[32mindex.html                 [39m[1m[2m  2.01 kB[22m[1m[22m[2m │ gzip:   0.77 kB[22m
+01:14:11.791 [2m../dist/public/[22m[2massets/[22m[35mindex-BTXmxZyX.css  [39m[1m[2m 74.83 kB[22m[1m[22m[2m │ gzip:  12.20 kB[22m
+01:14:11.791 [2m../dist/public/[22m[2massets/[22m[36mindex-iragS4L1.js   [39m[1m[33m912.12 kB[39m[22m[2m │ gzip: 258.92 kB[22m
+01:14:11.792 [33m
+01:14:11.792 (!) Some chunks are larger than 500 kB after minification. Consider:
+01:14:11.792 - Using dynamic import() to code-split the application
+01:14:11.792 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+01:14:11.792 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+01:14:11.793 [32m✓ built in 6.71s[39m
+01:14:12.090 Using TypeScript 5.6.3 (local user-provided)
+01:14:17.823 server/routes.ts(11,35): error TS2345: Argument of type 'typeof import("express-session")' is not assignable to parameter of type '(options?: any) => RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+01:14:17.824   Type 'typeof import("express-session")' provides no match for the signature '(options?: any): RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+01:14:17.824 server/routes.ts(24,21): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.824 server/routes.ts(32,23): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.824 server/routes.ts(33,52): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.824 server/routes.ts(40,11): error TS2349: This expression is not callable.
+01:14:17.824   Type 'typeof import("express-session")' has no call signatures.
+01:14:17.824 server/routes.ts(82,20): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.824 server/routes.ts(95,23): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.825 server/routes.ts(96,52): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.825 server/routes.ts(106,61): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.825 server/routes.ts(122,46): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.825   Type 'string[]' is not assignable to type 'string'.
+01:14:17.825 server/routes.ts(129,30): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.825   Type 'string[]' is not assignable to type 'string'.
+01:14:17.825 server/routes.ts(134,30): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.825   Type 'string[]' is not assignable to type 'string'.
+01:14:17.826 server/routes.ts(176,51): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.826   Type 'string[]' is not assignable to type 'string'.
+01:14:17.826 server/routes.ts(185,36): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.827   Type 'string[]' is not assignable to type 'string'.
+01:14:17.827 server/routes.ts(191,53): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.829 server/routes.ts(207,44): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.829   Type 'string[]' is not assignable to type 'string'.
+01:14:17.829 server/routes.ts(214,55): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.829 server/routes.ts(237,46): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.829   Type 'string[]' is not assignable to type 'string'.
+01:14:17.830 server/routes.ts(240,50): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.830   Type 'string[]' is not assignable to type 'string'.
+01:14:17.830 server/routes.ts(261,55): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.830 server/routes.ts(262,50): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.830   Type 'string[]' is not assignable to type 'string'.
+01:14:17.830 server/routes.ts(271,54): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.830   Type 'string[]' is not assignable to type 'string'.
+01:14:17.830 server/routes.ts(277,57): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+01:14:17.830   Type 'string[]' is not assignable to type 'string'.
+01:14:17.830 server/routes.ts(283,55): error TS2339: Property 'userId' does not exist on type 'Session & Partial<SessionData>'.
+01:14:17.830 server/routes.ts(285,9): error TS2322: Type 'string | string[]' is not assignable to type 'string'.
+01:14:17.830   Type 'string[]' is not assignable to type 'string'.
+01:14:17.830 
+01:14:19.601 Build Completed in /vercel/output [17s]
+01:14:19.798 Deploying outputs...
+01:14:25.068 Deployment completed
+01:14:26.127 Creating build cache...
+01:14:43.008 Created build cache: 17s
+01:14:43.008 Uploading build cache [74.27 MB]
+01:14:44.214 Build cache uploaded: 1.208s
