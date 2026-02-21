@@ -9,7 +9,12 @@ import connectPgSimple from "connect-pg-simple";
 import { Pool } from "pg";
 
 const PgSession = connectPgSimple(session);
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL?.includes("neon.tech") || process.env.DATABASE_URL?.includes("sslmode=require")
+    ? { rejectUnauthorized: false }
+    : undefined,
+});
 
 function hashPassword(password: string): string {
   return crypto.createHash("sha256").update(password + "thesisnest_salt").digest("hex");
@@ -37,7 +42,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     secret: process.env.SESSION_SECRET || "thesisnest-secret-key",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 },
+    cookie: { secure: process.env.NODE_ENV === "production", maxAge: 7 * 24 * 60 * 60 * 1000 },
   }));
 
   // Auth routes
