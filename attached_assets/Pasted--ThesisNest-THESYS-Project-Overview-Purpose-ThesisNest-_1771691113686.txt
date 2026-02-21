@@ -1,0 +1,72 @@
+🎓 ThesisNest (THESYS) – Project Overview
+👉 Purpose
+ThesisNest (THESYS) একটি Digital Platform যা থিসিস জমা দেওয়া, রিভিউ, ফিডব্যাক এবং অনুমোদনের পুরো প্রক্রিয়াটিকে ডিজিটাল ও সহজ করে তুলবে।
+এই সিস্টেমে তিন ধরনের ইউজার থাকবে → Student, Supervisor, Admin।
+প্রতিটি ইউজারের জন্য আলাদা আলাদা Dashboard থাকবে।
+________________________________________
+🧑‍🎓 Student Module
+Student যা করতে পারবে:
+•	👤 Profile Update → নিজের নাম, ইমেইল, কনট্যাক্ট, ডিপার্টমেন্ট এডিট করতে পারবে।
+•	📤 Thesis Proposal Upload → Title, Abstract লিখে PDF/DOCX ফাইল আপলোড করতে পারবে।
+•	🔄 Resubmit / Update → Supervisor যদি “Need Changes” বলে, তাহলে নতুন ভার্সন আপলোড করতে পারবে (Version History থাকবে)।
+•	✅ Status Check → Thesis এর অবস্থা দেখতে পারবে (Submitted / Approved / Rejected / Need Changes)।
+•	💬 View Feedback → Supervisor দেওয়া Feedback দেখতে পারবে।
+________________________________________
+👨‍🏫 Supervisor Module
+Supervisor যা করতে পারবে:
+•	👤 Profile Update → নিজের নাম, ইমেইল, ডিপার্টমেন্ট আপডেট করতে পারবে।
+•	📂 View Student Thesis → নিজের ডিপার্টমেন্ট/ব্যাচের স্টুডেন্টদের প্রোপোজাল দেখতে পারবে।
+•	📑 Review Proposal → প্রোপোজাল ডাউনলোড করে পড়বে এবং সিদ্ধান্ত নেবে:
+o	✔ Approve
+o	❌ Reject
+o	🔄 Need Changes
+•	💬 Give Feedback → স্টুডেন্টকে কমেন্ট লিখে জানাতে পারবে।
+•	🔍 Filter Options → Department বা Batch অনুযায়ী Thesis ফিল্টার করে দেখতে পারবে।
+________________________________________
+🛠️ Admin Module
+Admin পুরো সিস্টেম নিয়ন্ত্রণ করবে।
+Admin যা করতে পারবে:
+•	👤 Profile Update → নিজের নাম, ইমেইল, কনট্যাক্ট আপডেট করতে পারবে।
+•	👥 Manage Users →
+o	নতুন Student/Supervisor Account তৈরি করবে।
+o	Role Assign করবে।
+o	Supervisor Registration Approve/Reject করবে।
+•	🏫 Manage Departments → যেমন CSE, EEE, BBA ইত্যাদি ডিপার্টমেন্ট Add/Edit/Delete করতে পারবে।
+•	📊 Generate Reports →
+o	কোন ডিপার্টমেন্টে কতগুলো Thesis জমা পড়েছে।
+o	কোন Supervisor কতগুলো Thesis Review করেছে।
+•	⚙ System Settings → ভবিষ্যতে ফাইল স্টোরেজ, নতুন ফিচার, প্লাগইন কনফিগার করতে পারবে।
+________________________________________
+🔑 Authentication & Role System
+🔓 Login (Existing User)
+•	শুধু Email/Username + Password লাগবে।
+•	Role (Student / Supervisor / Admin) আগে থেকেই Database এ সেভ থাকবে।
+•	Login করার পর → সিস্টেম ইউজারের Role চেক করে Redirect করবে:
+o	Student → Student Dashboard
+o	Supervisor → Supervisor Dashboard
+o	Admin → Admin Panel
+👉 এখানে Dropdown এর দরকার নেই।
+________________________________________
+📝 Registration (New User)
+Case 1: Student Registration
+•	Registration ফর্মে Dropdown থেকে Role = Student বেছে নেবে।
+•	Account সাথে সাথেই Active হবে।
+•	Student Login করে সরাসরি Dashboard ব্যবহার করতে পারবে।
+•	Approve এর দরকার নেই।
+Case 2: Supervisor Registration
+•	Registration ফর্মে Dropdown থেকে Role = Supervisor বেছে নেবে।
+•	Account তৈরি হবে কিন্তু Active হবে না।
+•	Database → IsApproved = false থাকবে।
+•	Admin Panel এ গিয়ে Admin Approve করলে → IsApproved = true হবে।
+•	Approve না হওয়া পর্যন্ত Supervisor Login করলে এই মেসেজ দেখাবে:
+“Your account is pending approval by Admin.”
+________________________________________
+🏗 Technology Stack
+Component	Technology Used
+IDE	Visual Studio 2022
+Framework	ASP.NET Core Web App (Model-View-Controller)
+Database	SQL Server 2021
+Authentication	ASP.NET Identity (Role-based Access Control)
+Backend	ASP.NET Core MVC
+Frontend (UI)	Razor Pages (HTML + CSS + Bootstrap)
+
