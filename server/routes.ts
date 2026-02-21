@@ -7,12 +7,6 @@ import crypto from "crypto";
 import connectPgSimple from "connect-pg-simple";
 import { Pool } from "pg";
 
-declare module "express-session" {
-  interface SessionData {
-    userId: string;
-  }
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const PgSession = connectPgSimple(session as any);
 const pool = new Pool({
